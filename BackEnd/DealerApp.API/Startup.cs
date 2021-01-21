@@ -1,5 +1,6 @@
 using DealerApp.Core.Interfaces;
 using DealerApp.Infrastructure.Data;
+using DealerApp.Infrastructure.Filters;
 using DealerApp.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace DealerApp.API
 {
@@ -26,7 +28,19 @@ namespace DealerApp.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DealerApp"));
             });
-            services.AddControllers();
+            
+            services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>())
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+            });
+
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<ValidationFilter>();
+            });
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
