@@ -1,4 +1,6 @@
+using DealerApp.Core.Interfaces;
 using DealerApp.Infrastructure.Data;
+using DealerApp.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ namespace DealerApp.API
                 options.UseSqlServer(Configuration.GetConnectionString("DealerApp"));
             });
             services.AddControllers();
+
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
