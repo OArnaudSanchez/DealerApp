@@ -1,7 +1,9 @@
+using System;
 using DealerApp.Core.Interfaces;
 using DealerApp.Infrastructure.Data;
 using DealerApp.Infrastructure.Filters;
 using DealerApp.Infrastructure.Repositories;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,10 @@ namespace DealerApp.API
             services.AddMvc(options =>
             {
                 options.Filters.Add<ValidationFilter>();
+            })
+            .AddFluentValidation(options =>
+            {
+                options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
