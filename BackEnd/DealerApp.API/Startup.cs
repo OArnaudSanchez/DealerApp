@@ -1,12 +1,15 @@
 using System;
 using AutoMapper;
+using DealerApp.Core.CustomEntities;
 using DealerApp.Core.Interfaces;
 using DealerApp.Infrastructure.Data;
 using DealerApp.Infrastructure.Filters;
 using DealerApp.Infrastructure.Repositories;
+using DealerApp.Infrastructure.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -51,8 +54,17 @@ namespace DealerApp.API
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IUriService>(provider =>
+            {
+                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var request = accessor.HttpContext.Request;
+                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                return new UriService(absoluteUri);
+            });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
