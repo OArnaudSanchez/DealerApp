@@ -2,6 +2,7 @@ using System;
 using AutoMapper;
 using DealerApp.Core.CustomEntities;
 using DealerApp.Core.Interfaces;
+using DealerApp.Core.Services;
 using DealerApp.Infrastructure.Data;
 using DealerApp.Infrastructure.Filters;
 using DealerApp.Infrastructure.Repositories;
@@ -53,6 +54,7 @@ namespace DealerApp.API
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(IPagedGenerator<>), typeof(PagedGenerator<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IUriService>(provider =>
             {
