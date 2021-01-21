@@ -1,4 +1,5 @@
 using System;
+using AutoMapper;
 using DealerApp.Core.Interfaces;
 using DealerApp.Infrastructure.Data;
 using DealerApp.Infrastructure.Filters;
@@ -50,6 +51,8 @@ namespace DealerApp.API
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
