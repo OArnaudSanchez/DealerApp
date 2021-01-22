@@ -63,6 +63,7 @@ namespace DealerApp.API
             services.AddTransient<IFechaValidation, FechaValidation>();
             services.AddTransient<ISangreValidation, SangreValidation>();
             services.AddTransient<IRolValidation, RolValidation>();
+			services.AddTransient<IHelperImage, ImageService>();
 			
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IUriService>(provider =>
@@ -85,6 +86,13 @@ namespace DealerApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
+			
+			app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Resources//Images")),
+                RequestPath = "/Resources"
+            });
 
             app.UseHttpsRedirection();
 
