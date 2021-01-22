@@ -16,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using DealerApp.Core.Validations;
 
 namespace DealerApp.API
 {
@@ -55,6 +56,14 @@ namespace DealerApp.API
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IPagedGenerator<>), typeof(PagedGenerator<>));
+			services.AddTransient<IClienteService, ClienteService>();
+			services.AddTransient<IEmailValidation, EmailValidation>();
+            services.AddTransient<IDniValidation, DniValidation>();
+            services.AddTransient<IPhoneNumberValidation, PhoneValidation>();
+            services.AddTransient<IFechaValidation, FechaValidation>();
+            services.AddTransient<ISangreValidation, SangreValidation>();
+            services.AddTransient<IRolValidation, RolValidation>();
+			
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IUriService>(provider =>
             {
