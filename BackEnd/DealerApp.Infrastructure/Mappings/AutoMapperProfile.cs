@@ -9,7 +9,7 @@ namespace DealerApp.Infrastructure.Mappings
         public AutoMapperProfile()
         {
             CreateMap<Cliente, ClienteDTO>().ReverseMap();
-            
+            CreateMap<Color, ColorDTO>().ReverseMap();
         }
     }
 }
