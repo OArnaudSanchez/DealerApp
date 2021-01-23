@@ -17,6 +17,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using DealerApp.Core.Validations;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace DealerApp.API
 {
@@ -56,6 +58,7 @@ namespace DealerApp.API
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IPagedGenerator<>), typeof(PagedGenerator<>));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 			services.AddTransient<IClienteService, ClienteService>();
 			services.AddTransient<IEmailValidation, EmailValidation>();
             services.AddTransient<IDniValidation, DniValidation>();
@@ -64,8 +67,8 @@ namespace DealerApp.API
             services.AddTransient<ISangreValidation, SangreValidation>();
             services.AddTransient<IRolValidation, RolValidation>();
 			services.AddTransient<IHelperImage, ImageService>();
+            services.AddTransient<IColorService, ColorService>();
 			
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IUriService>(provider =>
             {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
