@@ -68,6 +68,9 @@ namespace DealerApp.API
             services.AddTransient<IRolValidation, RolValidation>();
 			services.AddTransient<IHelperImage, ImageService>();
             services.AddTransient<IColorService, ColorService>();
+			services.AddTransient<IColorService, ColorService>();
+			services.AddTransient<ICombustibleService, CombustibleService>();
+
 			
             services.AddSingleton<IUriService>(provider =>
             {
