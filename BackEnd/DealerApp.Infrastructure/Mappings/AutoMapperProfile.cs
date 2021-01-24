@@ -13,6 +13,8 @@ namespace DealerApp.Infrastructure.Mappings
             CreateMap<Combustible, CombustibleDTO>().ReverseMap();
             CreateMap<Contrato, ContratoDTO>().ReverseMap();
             CreateMap<Marca, MarcaDTO>().ReverseMap();
+            CreateMap<Modelo, ModeloDTO>().ReverseMap();
+
         }
     }
 }
