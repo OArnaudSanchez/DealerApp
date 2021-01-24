@@ -70,6 +70,7 @@ namespace DealerApp.API
             services.AddTransient<IColorService, ColorService>();
 			services.AddTransient<ICombustibleService, CombustibleService>();
             services.AddTransient<IContratoService, ContratoService>();
+            services.AddTransient<IMarcaService, MarcaService>();
 
 			
             services.AddSingleton<IUriService>(provider =>
