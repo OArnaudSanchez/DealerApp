@@ -73,6 +73,7 @@ namespace DealerApp.API
             services.AddTransient<IMarcaService, MarcaService>();
             services.AddTransient<IModeloService, ModeloService>();
             services.AddTransient<IRolService, RolService>();
+            services.AddTransient<ISangreClienteService, SangreClienteService>();
 
 
 			
