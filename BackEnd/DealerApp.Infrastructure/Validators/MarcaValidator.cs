@@ -12,7 +12,6 @@ namespace DealerApp.Infrastructure.Validators
             RuleFor(x => x.Lanzamiento).NotNull().NotEmpty().Length(4, 4).LessThan(DateTime.Now.Year.ToString());
             RuleFor(x => x.Descripcion).NotNull().NotEmpty().Length(5, 150);
             RuleFor(x => x.Image).NotNull().NotEmpty();
-
         }
     }
 }
