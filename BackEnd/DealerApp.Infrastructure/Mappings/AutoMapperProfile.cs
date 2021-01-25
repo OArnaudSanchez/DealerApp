@@ -16,6 +16,7 @@ namespace DealerApp.Infrastructure.Mappings
             CreateMap<Modelo, ModeloDTO>().ReverseMap();
             CreateMap<Rol, RolDTO>().ReverseMap();
             CreateMap<SangreClienteDTO, SangreCliente>().ReverseMap();
+            CreateMap<Usuario, UsuarioDTO>().ReverseMap();
             CreateMap<Vehiculo, VehiculoDTO>().ReverseMap();
         }
     }
