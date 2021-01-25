@@ -20,6 +20,9 @@ using DealerApp.Core.Validations;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
 using DealerApp.Infrastructure.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace DealerApp.API
 {
@@ -76,6 +79,8 @@ namespace DealerApp.API
             services.AddTransient<IRolService, RolService>();
             services.AddTransient<ISangreClienteService, SangreClienteService>();
             services.AddTransient<IVehiculoService, VehiculoService>();
+            services.AddTransient<ILoginService, LoginService>();
+            services.AddTransient<ILoginRepository, LoginRepository>();
 			
             services.AddSingleton<IUriService>(provider =>
             {
@@ -89,6 +94,25 @@ namespace DealerApp.API
 
             services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
             services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
+
+             services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Authentication:Issuer"],
+                    ValidAudience = Configuration["Authentication:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -109,6 +133,10 @@ namespace DealerApp.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
