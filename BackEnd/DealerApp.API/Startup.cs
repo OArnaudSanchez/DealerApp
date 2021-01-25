@@ -74,8 +74,7 @@ namespace DealerApp.API
             services.AddTransient<IModeloService, ModeloService>();
             services.AddTransient<IRolService, RolService>();
             services.AddTransient<ISangreClienteService, SangreClienteService>();
-
-
+            services.AddTransient<IVehiculoService, VehiculoService>();
 			
             services.AddSingleton<IUriService>(provider =>
             {
