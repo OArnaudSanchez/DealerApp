@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using DealerApp.Core.Validations;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using DealerApp.Infrastructure.Options;
 
 namespace DealerApp.API
 {
@@ -87,6 +88,7 @@ namespace DealerApp.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
+            services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
