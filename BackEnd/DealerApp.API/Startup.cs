@@ -1,30 +1,12 @@
-using System;
-using AutoMapper;
-using DealerApp.Core.CustomEntities;
-using DealerApp.Core.Interfaces;
-using DealerApp.Core.Services;
-using DealerApp.Infrastructure.Data;
-using DealerApp.Infrastructure.Filters;
-using DealerApp.Infrastructure.Repositories;
-using DealerApp.Infrastructure.Services;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using DealerApp.Core.Validations;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
-using DealerApp.Infrastructure.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
+using DealerApp.Infrastructure.Extensions;
 
 namespace DealerApp.API
 {
@@ -40,92 +22,19 @@ namespace DealerApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DealerContext>(options =>
-            {
-                options.UseSqlServer(Configuration.GetConnectionString("DealerApp"));
-            });
+            services.AddDbContexts(Configuration);
 
-            services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>())
-            .AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-            });
+            services.AddOptions(Configuration);
 
+            services.AddServices();
 
-            services.AddMvc(options =>
-            {
-                options.Filters.Add<ValidationFilter>();
-            })
-            .AddFluentValidation(options =>
-            {
-                options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-            });
+            services.AddSwaggerDocumentation($"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
 
-            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-            services.AddScoped(typeof(IPagedGenerator<>), typeof(PagedGenerator<>));
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<IClienteService, ClienteService>();
-            services.AddTransient<IEmailValidation, EmailValidation>();
-            services.AddTransient<IDniValidation, DniValidation>();
-            services.AddTransient<IPhoneNumberValidation, PhoneValidation>();
-            services.AddTransient<IFechaValidation, FechaValidation>();
-            services.AddTransient<ISangreValidation, SangreValidation>();
-            services.AddTransient<IRolValidation, RolValidation>();
-            services.AddTransient<IHelperImage, ImageService>();
-            services.AddTransient<IColorService, ColorService>();
-            services.AddTransient<ICombustibleService, CombustibleService>();
-            services.AddTransient<IContratoService, ContratoService>();
-            services.AddTransient<IMarcaService, MarcaService>();
-            services.AddTransient<IModeloService, ModeloService>();
-            services.AddTransient<IRolService, RolService>();
-            services.AddTransient<ISangreClienteService, SangreClienteService>();
-            services.AddTransient<IUsuarioService, UsuarioService>();
-            services.AddTransient<IVehiculoService, VehiculoService>();
-            services.AddTransient<IPasswordHasher, PasswordService>();
-            services.AddTransient<ILoginService, LoginService>();
-            services.AddTransient<ILoginRepository, LoginRepository>();
+            services.AddJwtAuthentication(Configuration);
 
+            services.AddMvcConfiguration();
 
-            services.AddSingleton<IUriService>(provider =>
-            {
-                var accessor = provider.GetRequiredService<IHttpContextAccessor>();
-                var request = accessor.HttpContext.Request;
-                var absoluteUri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
-                return new UriService(absoluteUri);
-            });
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
-            services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
-
-            services.AddAuthentication(options =>
-           {
-               options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-               options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-           })
-           .AddJwtBearer(options =>
-           {
-               options.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuer = true,
-                   ValidateAudience = true,
-                   ValidateLifetime = true,
-                   ValidateIssuerSigningKey = true,
-                   ValidIssuer = Configuration["Authentication:Issuer"],
-                   ValidAudience = Configuration["Authentication:Audience"],
-                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
-               };
-           });
-
-            services.AddSwaggerGen(doc =>
-            {
-                doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Dealer API", Version = "v1" });
-                var xmlComents = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlComents);
-                doc.IncludeXmlComments(xmlPath);
-            });
+            services.AddControllersConfigurations();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
