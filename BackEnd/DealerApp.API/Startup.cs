@@ -23,6 +23,8 @@ using DealerApp.Infrastructure.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace DealerApp.API
 {
@@ -42,7 +44,7 @@ namespace DealerApp.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DealerApp"));
             });
-            
+
             services.AddControllers(options => options.Filters.Add<GlobalExceptionFilter>())
             .AddNewtonsoftJson(options =>
             {
@@ -63,16 +65,16 @@ namespace DealerApp.API
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(IPagedGenerator<>), typeof(PagedGenerator<>));
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-			services.AddTransient<IClienteService, ClienteService>();
-			services.AddTransient<IEmailValidation, EmailValidation>();
+            services.AddTransient<IClienteService, ClienteService>();
+            services.AddTransient<IEmailValidation, EmailValidation>();
             services.AddTransient<IDniValidation, DniValidation>();
             services.AddTransient<IPhoneNumberValidation, PhoneValidation>();
             services.AddTransient<IFechaValidation, FechaValidation>();
             services.AddTransient<ISangreValidation, SangreValidation>();
             services.AddTransient<IRolValidation, RolValidation>();
-			services.AddTransient<IHelperImage, ImageService>();
+            services.AddTransient<IHelperImage, ImageService>();
             services.AddTransient<IColorService, ColorService>();
-			services.AddTransient<ICombustibleService, CombustibleService>();
+            services.AddTransient<ICombustibleService, CombustibleService>();
             services.AddTransient<IContratoService, ContratoService>();
             services.AddTransient<IMarcaService, MarcaService>();
             services.AddTransient<IModeloService, ModeloService>();
@@ -84,7 +86,7 @@ namespace DealerApp.API
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<ILoginRepository, LoginRepository>();
 
-			
+
             services.AddSingleton<IUriService>(provider =>
             {
                 var accessor = provider.GetRequiredService<IHttpContextAccessor>();
@@ -98,23 +100,31 @@ namespace DealerApp.API
             services.Configure<PaginationOptions>(Configuration.GetSection("Pagination"));
             services.Configure<PasswordOptions>(Configuration.GetSection("PasswordOptions"));
 
-             services.AddAuthentication(options =>
+            services.AddAuthentication(options =>
+           {
+               options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+               options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+           })
+           .AddJwtBearer(options =>
+           {
+               options.TokenValidationParameters = new TokenValidationParameters
+               {
+                   ValidateIssuer = true,
+                   ValidateAudience = true,
+                   ValidateLifetime = true,
+                   ValidateIssuerSigningKey = true,
+                   ValidIssuer = Configuration["Authentication:Issuer"],
+                   ValidAudience = Configuration["Authentication:Audience"],
+                   IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
+               };
+           });
+
+            services.AddSwaggerGen(doc =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Authentication:Issuer"],
-                    ValidAudience = Configuration["Authentication:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Authentication:SecretKey"]))
-                };
+                doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Dealer API", Version = "v1" });
+                var xmlComents = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlComents);
+                doc.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -125,8 +135,15 @@ namespace DealerApp.API
             {
                 app.UseDeveloperExceptionPage();
             }
-			
-			app.UseStaticFiles(new StaticFileOptions
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Dealer API V1");
+                options.RoutePrefix = string.Empty;
+            });
+
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Resources//Images")),
