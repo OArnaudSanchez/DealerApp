@@ -10,6 +10,7 @@ using DealerApp.Core.Interfaces;
 using DealerApp.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DealerApp.API.Controllers
 {
@@ -54,6 +55,7 @@ namespace DealerApp.API.Controllers
             return Ok(response);
         }
 
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] VehiculoDTO vehiculoDTO)
         {
@@ -65,6 +67,7 @@ namespace DealerApp.API.Controllers
             return Created(nameof(Get), new { id = vehiculo.Id, response });
         }
 
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, [FromForm] VehiculoDTO vehiculoDTO)
         {
@@ -76,6 +79,7 @@ namespace DealerApp.API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {

@@ -7,11 +7,13 @@ using DealerApp.Core.DTOs;
 using DealerApp.Core.Entities;
 using DealerApp.Core.Interfaces;
 using DealerApp.Core.QueryFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace DealerApp.API.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     [ApiController]
     [Route("api/[controller]")]
     public class ModelosController : ControllerBase

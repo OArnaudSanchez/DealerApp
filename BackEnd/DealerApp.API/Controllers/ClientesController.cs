@@ -10,9 +10,11 @@ using DealerApp.Core.Interfaces;
 using DealerApp.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DealerApp.API.Controllers
 {
+    [Authorize(Roles = "Administrador, Empleado")]
     [ApiController]
     [Route("api/[controller]")]
     public class ClientesController : ControllerBase
