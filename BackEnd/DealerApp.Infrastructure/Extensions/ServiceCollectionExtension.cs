@@ -13,10 +13,13 @@ using DealerApp.Infrastructure.Repositories;
 using DealerApp.Infrastructure.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -29,7 +32,7 @@ namespace DealerApp.Infrastructure.Extensions
         {
             services.AddDbContext<DealerContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DealerApp"));
+                options.UseSqlServer(Configuration.GetConnectionString("AzureSQLConnection"));
             });
             return services;
         }
@@ -136,6 +139,28 @@ namespace DealerApp.Infrastructure.Extensions
                options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
            });
             return services;
+        }
+
+        public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Dealer API V1");
+                options.RoutePrefix = string.Empty;
+            });
+            return app;
+        }
+
+        public static IApplicationBuilder UseStaticFilesConfig(this IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                                Path.Combine(env.ContentRootPath,"wwwroot","Resources","Images")),
+                RequestPath = "/wwwroot/Resources"
+            });
+            return app;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace DealerApp.Infrastructure.Data
         public DealerContext(DbContextOptions<DealerContext> options)
             : base(options)
         {
-        }
+        }   
 
         public virtual DbSet<Cliente> Cliente { get; set; }
         public virtual DbSet<Color> Color { get; set; }
