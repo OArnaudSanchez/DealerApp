@@ -51,6 +51,7 @@ namespace DealerApp.API.Controllers
         public async Task<ActionResult> Get(int id)
         {
             var cliente = await _clienteService.GetCliente(id);
+            cliente.Foto = $"{Request.Scheme}://{Request.Host.Value}{Request.PathBase}/wwwroot/{cliente.Foto}";
             var clienteDTo = _mapper.Map<ClienteDTO>(cliente);
             var response = new ApiResponse<ClienteDTO>(clienteDTo);
             return Ok(response);

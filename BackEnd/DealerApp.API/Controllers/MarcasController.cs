@@ -51,6 +51,7 @@ namespace DealerApp.API.Controllers
         public async Task<ActionResult> Get(int id)
         {
             var marca = await _marcaService.GetMarca(id);
+            marca.Foto = $"{Request.Scheme}://{Request.Host.Value}{Request.PathBase}/wwwroot/{marca.Foto}";
             var marcaDTO = _mapper.Map<MarcaDTO>(marca);
             var response = new ApiResponse<MarcaDTO>(marcaDTO);
             return Ok(response);
