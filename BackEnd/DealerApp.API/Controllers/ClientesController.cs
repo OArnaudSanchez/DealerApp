@@ -25,7 +25,6 @@ namespace DealerApp.API.Controllers
         private readonly IUriService _uriService;
         private readonly IHelperImage _helperImage;
         private readonly string directory;
-        private readonly string folder;
         public ClientesController(IClienteService clienteService, IMapper mapper, IUriService uriService,
         IHelperImage helperImage, IWebHostEnvironment env)
         {
@@ -34,7 +33,6 @@ namespace DealerApp.API.Controllers
             _uriService = uriService;
             _helperImage = helperImage;
             directory = env.ContentRootPath;
-            folder = this.GetType().Name.Replace("Controller", "");
         }
 
         [HttpGet]
@@ -61,7 +59,7 @@ namespace DealerApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] ClienteDTO clienteDTO)
         {
-            clienteDTO.Foto = await _helperImage.Upload(clienteDTO.Image, directory, folder);
+            clienteDTO.Foto = await _helperImage.Upload(clienteDTO.Image, directory);
             var cliente = _mapper.Map<Cliente>(clienteDTO);
             await _clienteService.InsertCliente(cliente);
             clienteDTO = _mapper.Map<ClienteDTO>(cliente);
@@ -73,7 +71,7 @@ namespace DealerApp.API.Controllers
         public async Task<ActionResult> Put(int id, [FromForm] ClienteDTO clienteDTO)
         {
             await DeleteImage(id);
-            clienteDTO.Foto = await _helperImage.Upload(clienteDTO.Image, directory, folder);
+            clienteDTO.Foto = await _helperImage.Upload(clienteDTO.Image, directory);
             var cliente = _mapper.Map<Cliente>(clienteDTO);
             cliente.Id = id;
             await _clienteService.UpdateCliente(cliente);
@@ -91,7 +89,7 @@ namespace DealerApp.API.Controllers
         private async Task<bool> DeleteImage(int id)
         {
             var image = await _clienteService.GetCliente(id);
-            _helperImage.DeleteImage(image.Foto, folder, directory);
+            _helperImage.DeleteImage(image.Foto, directory);
             return true;
         }
     }

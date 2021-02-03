@@ -157,8 +157,8 @@ namespace DealerApp.Infrastructure.Extensions
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
-                                Path.Combine(env.ContentRootPath,"wwwroot","Resources","Images")),
-                RequestPath = "/wwwroot/Resources"
+                                Path.Combine(env.ContentRootPath,"wwwroot")),
+                RequestPath = "/wwwroot"
             });
             return app;
         }

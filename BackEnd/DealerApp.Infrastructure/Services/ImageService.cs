@@ -12,7 +12,7 @@ namespace DealerApp.Infrastructure.Services
 {
     public class ImageService : IHelperImage
     {
-        public async Task<string> Upload(List<IFormFile> file, string directory, string folder)
+        public async Task<string> Upload(List<IFormFile> file, string directory)
         {
             if (file.Count == 0 || file == null)
             {
@@ -21,7 +21,7 @@ namespace DealerApp.Infrastructure.Services
 
             if (CheckImageFile(file))
             {
-                return await WriteFile(file, directory, folder);
+                return await WriteFile(file, directory);
             }
 
             throw new BussinessException("La Foto no Tiene un Formato Valido", 400);
@@ -41,7 +41,7 @@ namespace DealerApp.Infrastructure.Services
             return false;
         }
 
-        public async Task<string> WriteFile(List<IFormFile> file, string directory, string folder)
+        public async Task<string> WriteFile(List<IFormFile> file, string directory)
         {
             string fileName = "";
             try
@@ -51,7 +51,7 @@ namespace DealerApp.Infrastructure.Services
                     var extension = "." + image.FileName.Split('.')[image.FileName.Split('.').Length - 1];
                     fileName = Guid.NewGuid().ToString() + extension;
 
-                    var path = Path.Combine(directory, $"wwwroot\\Resources\\Images\\{folder}", fileName);
+                    var path = Path.Combine(directory, $"wwwroot\\", fileName);
 
                     var bits = new FileStream(path, FileMode.Create);
 
@@ -67,9 +67,9 @@ namespace DealerApp.Infrastructure.Services
 
             return fileName;
         }
-        public void DeleteImage(string fileName, string folder, string directory)
+        public void DeleteImage(string fileName, string directory)
         {
-            var imagePath = Path.Combine(directory, $"wwwroot\\Resources\\Images\\{folder}", fileName);
+            var imagePath = Path.Combine(directory, $"wwwroot\\", fileName);
             if (System.IO.File.Exists(imagePath))
                 System.IO.File.Delete(imagePath);
         }

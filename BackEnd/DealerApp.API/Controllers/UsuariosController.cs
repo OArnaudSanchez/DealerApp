@@ -24,7 +24,6 @@ namespace DealerApp.API.Controllers
         private readonly IUriService _uriService;
         private readonly IHelperImage _helperImage;
         private readonly string directory;
-        private readonly string folder;
 
         public UsuariosController(IUsuarioService usuarioService, IMapper mapper, IUriService uriService, IHelperImage helperImage)
         {
@@ -33,7 +32,6 @@ namespace DealerApp.API.Controllers
             _uriService = uriService;
             _helperImage = helperImage;
             directory = Directory.GetCurrentDirectory();
-            folder = this.GetType().Name.Replace("Controller", "");
         }
 
         [HttpGet]
@@ -59,7 +57,7 @@ namespace DealerApp.API.Controllers
         private async Task<bool> DeleteImage(int id)
         {
             var image = await _usuarioService.GetUsuario(id);
-            _helperImage.DeleteImage(image.Foto, folder, directory);
+            _helperImage.DeleteImage(image.Foto, directory);
             return true;
         }
     }

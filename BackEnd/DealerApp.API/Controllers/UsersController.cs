@@ -17,7 +17,6 @@ namespace DealerApp.API.Controllers
         private readonly IMapper _mapper;
         private readonly IHelperImage _helperImage;
         private readonly IPasswordHasher _passwordHasher;
-        private readonly string folder;
         private readonly string directory;
         public UsersController(ILoginService loginService, IMapper mapper, IHelperImage helperImage, IPasswordHasher passwordHasher, IWebHostEnvironment env)
         {
@@ -26,13 +25,12 @@ namespace DealerApp.API.Controllers
             _helperImage = helperImage;
             _passwordHasher = passwordHasher;
             directory = env.ContentRootPath;
-            folder = this.GetType().Name.Replace("Controller", "");
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateUser([FromForm] UsuarioDTO usuarioDTO)
         {
-            usuarioDTO.Foto = await _helperImage.Upload(usuarioDTO.Image, directory, folder);
+            usuarioDTO.Foto = await _helperImage.Upload(usuarioDTO.Image, directory);
             var usuario = _mapper.Map<Usuario>(usuarioDTO);
             usuario.Contrasena = _passwordHasher.Hash(usuario.Contrasena);
             await _loginService.RegisterUser(usuario);

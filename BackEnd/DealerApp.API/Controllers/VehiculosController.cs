@@ -32,7 +32,6 @@ namespace DealerApp.API.Controllers
             _uriService = uriService;
             _vehiculoService = vehiculoService;
             directory = env.ContentRootPath;
-            folder = this.GetType().Name.Replace("Controller", "");
         }
 
         [HttpGet]
@@ -60,7 +59,7 @@ namespace DealerApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] VehiculoDTO vehiculoDTO)
         {
-            vehiculoDTO.Foto = await _helperImage.Upload(vehiculoDTO.Image, directory, folder);
+            vehiculoDTO.Foto = await _helperImage.Upload(vehiculoDTO.Image, directory);
             var vehiculo = _mapper.Map<Vehiculo>(vehiculoDTO);
             await _vehiculoService.InsertVehiculo(vehiculo);
             vehiculoDTO = _mapper.Map<VehiculoDTO>(vehiculo);
@@ -73,7 +72,7 @@ namespace DealerApp.API.Controllers
         public async Task<ActionResult> Put(int id, [FromForm] VehiculoDTO vehiculoDTO)
         {
             await DeleteImage(id);
-            vehiculoDTO.Foto = await _helperImage.Upload(vehiculoDTO.Image, directory, folder);
+            vehiculoDTO.Foto = await _helperImage.Upload(vehiculoDTO.Image, directory);
             var vehiculo = _mapper.Map<Vehiculo>(vehiculoDTO);
             vehiculo.Id = id;
             await _vehiculoService.UpdateVehiculo(vehiculo);
@@ -92,7 +91,7 @@ namespace DealerApp.API.Controllers
         private async Task<bool> DeleteImage(int id)
         {
             var image = await _vehiculoService.GetVehiculo(id);
-            _helperImage.DeleteImage(image.Foto, folder, directory);
+            _helperImage.DeleteImage(image.Foto, directory);
             return true;
         }
     }

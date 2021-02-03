@@ -33,7 +33,6 @@ namespace DealerApp.API.Controllers
             _uriService = uriService;
             _helperImage = helperImage;
             directory = env.ContentRootPath;
-            folder = this.GetType().Name.Replace("Controller", "");
         }
 
         [HttpGet]
@@ -60,7 +59,7 @@ namespace DealerApp.API.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] MarcaDTO marcaDTO)
         {
-            marcaDTO.Foto = await _helperImage.Upload(marcaDTO.Image, directory, folder);
+            marcaDTO.Foto = await _helperImage.Upload(marcaDTO.Image, directory);
             var marca = _mapper.Map<Marca>(marcaDTO);
             await _marcaService.InsertMarca(marca);
             marcaDTO = _mapper.Map<MarcaDTO>(marca);
@@ -72,7 +71,7 @@ namespace DealerApp.API.Controllers
         public async Task<ActionResult> Put(int id, [FromForm] MarcaDTO marcaDTO)
         {
             await DeleteImage(id);
-            marcaDTO.Foto = await _helperImage.Upload(marcaDTO.Image, directory, folder);
+            marcaDTO.Foto = await _helperImage.Upload(marcaDTO.Image, directory);
             var marca = _mapper.Map<Marca>(marcaDTO);
             marca.Id = id;
             await _marcaService.UpdateMarca(marca);
@@ -90,7 +89,7 @@ namespace DealerApp.API.Controllers
         private async Task<bool> DeleteImage(int id)
         {
             var image = await _marcaService.GetMarca(id);
-            _helperImage.DeleteImage(image.Foto, folder, directory);
+            _helperImage.DeleteImage(image.Foto, directory);
             return true;
         }
     }
