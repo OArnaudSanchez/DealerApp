@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.FileProviders;
-using System.IO;
 using System.Reflection;
 using DealerApp.Infrastructure.Extensions;
 
@@ -45,19 +43,9 @@ namespace DealerApp.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSwagger();
-            app.UseSwaggerUI(options =>
-            {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Dealer API V1");
-                options.RoutePrefix = string.Empty;
-            });
+            app.UseSwaggerConfig();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "Resources//Images")),
-                RequestPath = "/Resources"
-            });
+            app.UseStaticFilesConfig(env);
 
             app.UseHttpsRedirection();
 

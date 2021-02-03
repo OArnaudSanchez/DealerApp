@@ -11,6 +11,7 @@ using DealerApp.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 
 namespace DealerApp.API.Controllers
 {
@@ -24,13 +25,13 @@ namespace DealerApp.API.Controllers
         private readonly IHelperImage _helperImage;
         private readonly string directory;
         private readonly string folder;
-        public VehiculosController(IVehiculoService vehiculoService, IMapper mapper, IUriService uriService, IHelperImage helperImage)
+        public VehiculosController(IVehiculoService vehiculoService, IMapper mapper, IUriService uriService, IHelperImage helperImage, IWebHostEnvironment env)
         {
             _helperImage = helperImage;
             _mapper = mapper;
             _uriService = uriService;
             _vehiculoService = vehiculoService;
-            directory = Directory.GetCurrentDirectory();
+            directory = env.ContentRootPath;
             folder = this.GetType().Name.Replace("Controller", "");
         }
 

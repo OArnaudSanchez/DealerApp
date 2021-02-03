@@ -113,7 +113,7 @@ namespace DealerApp.Core.Services
                 IdModelo = x.IdModelo,
                 IdCombustible = x.IdCombustible,
                 IdColor = x.IdColor,
-                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/Resources/Vehiculos/{x.Foto}"
+                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/wwwroot/Resources/Vehiculos/{x.Foto}"
             });
         }
     }

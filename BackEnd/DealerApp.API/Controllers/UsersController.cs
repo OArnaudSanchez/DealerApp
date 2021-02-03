@@ -4,6 +4,7 @@ using AutoMapper;
 using DealerApp.Core.DTOs;
 using DealerApp.Core.Entities;
 using DealerApp.Core.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DealerApp.API.Controllers
@@ -18,13 +19,13 @@ namespace DealerApp.API.Controllers
         private readonly IPasswordHasher _passwordHasher;
         private readonly string folder;
         private readonly string directory;
-        public UsersController(ILoginService loginService, IMapper mapper, IHelperImage helperImage, IPasswordHasher passwordHasher)
+        public UsersController(ILoginService loginService, IMapper mapper, IHelperImage helperImage, IPasswordHasher passwordHasher, IWebHostEnvironment env)
         {
             _loginService = loginService;
             _mapper = mapper;
             _helperImage = helperImage;
             _passwordHasher = passwordHasher;
-            directory = Directory.GetCurrentDirectory();
+            directory = env.ContentRootPath;
             folder = this.GetType().Name.Replace("Controller", "");
         }
 

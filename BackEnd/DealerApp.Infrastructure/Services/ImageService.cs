@@ -51,7 +51,7 @@ namespace DealerApp.Infrastructure.Services
                     var extension = "." + image.FileName.Split('.')[image.FileName.Split('.').Length - 1];
                     fileName = Guid.NewGuid().ToString() + extension;
 
-                    var path = Path.Combine(directory, $"Resources\\Images\\{folder}", fileName);
+                    var path = Path.Combine(directory, $"wwwroot\\Resources\\Images\\{folder}", fileName);
 
                     var bits = new FileStream(path, FileMode.Create);
 
@@ -69,7 +69,7 @@ namespace DealerApp.Infrastructure.Services
         }
         public void DeleteImage(string fileName, string folder, string directory)
         {
-            var imagePath = Path.Combine(directory, $"Resources\\Images\\{folder}", fileName);
+            var imagePath = Path.Combine(directory, $"wwwroot\\Resources\\Images\\{folder}", fileName);
             if (System.IO.File.Exists(imagePath))
                 System.IO.File.Delete(imagePath);
         }

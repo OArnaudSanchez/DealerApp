@@ -80,7 +80,7 @@ namespace DealerApp.Core.Services
                 Descripcion = x.Descripcion,
                 Lanzamiento = x.Lanzamiento,
                 Estatus = x.Estatus,
-                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/Resources/Marcas/{x.Foto}"
+                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/wwwroot/Resources/Marcas/{x.Foto}"
             });
         }
     }

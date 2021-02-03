@@ -128,7 +128,7 @@ namespace DealerApp.Core.Services
                 Estatus = x.Estatus,
                 IdRol = x.IdRol,
                 IdSangre = x.IdSangre,
-                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/Resources/Clientes/{x.Foto}"
+                Foto = $"{resourceLocation.Scheme}://{resourceLocation.Host}{resourceLocation.PathBase}/wwwroot/Resources/Clientes/{x.Foto}"
             });
         }
     }

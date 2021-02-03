@@ -9,6 +9,7 @@ using DealerApp.Core.Entities;
 using DealerApp.Core.Interfaces;
 using DealerApp.Core.QueryFilters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -25,13 +26,13 @@ namespace DealerApp.API.Controllers
         private readonly IHelperImage _helperImage;
         private readonly string directory;
         private readonly string folder;
-        public MarcasController(IMarcaService marcaService, IMapper mapper, IUriService uriService, IHelperImage helperImage)
+        public MarcasController(IMarcaService marcaService, IMapper mapper, IUriService uriService, IHelperImage helperImage, IWebHostEnvironment env)
         {
             _marcaService = marcaService;
             _mapper = mapper;
             _uriService = uriService;
             _helperImage = helperImage;
-            directory = Directory.GetCurrentDirectory();
+            directory = env.ContentRootPath;
             folder = this.GetType().Name.Replace("Controller", "");
         }
 
